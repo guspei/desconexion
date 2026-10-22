@@ -38,8 +38,12 @@ object Store {
 
     val ready get() = sp.getBoolean("setup", false)
 
-    fun setup(allowed: List<String>) {
-        sp.edit().putString("allowed", allowed.joinToString(",")).putBoolean("setup", true).apply()
+    fun setup(allowed: List<String>, block: List<String>) {
+        sp.edit()
+            .putString("allowed", allowed.joinToString(","))
+            .putString("blocked", block.joinToString(","))
+            .putBoolean("setup", true)
+            .apply()
         load()
     }
 
