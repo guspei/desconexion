@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <!-- Granted once over adb: airplane mode, grayscale and keeping the watcher enabled -->
+    <uses-permission
+        android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="false"
+        android:enableOnBackInvokedCallback="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="desconexión"
+        android:supportsRtl="false"
+        android:theme="@style/Negro">
+
+        <activity
+            android:name=".HomeActivity"
+            android:clearTaskOnLaunch="true"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden|navigation|uiMode|density|fontScale"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:resumeWhilePausing="true"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="adjustNothing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".AppsActivity"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".StatsActivity"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".SettingsActivity"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".RulesActivity"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".ListActivity"
+            android:excludeFromRecents="true"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
+        <activity
+            android:name=".SetupActivity"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".ChecksActivity"
+            android:excludeFromRecents="true" />
+
+        <receiver
+            android:name=".ChecksReceiver"
+            android:exported="false" />
+
+        <!-- Own task so finishing it reveals the app underneath, not the launcher -->
+        <activity
+            android:name=".BlockActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:taskAffinity="ai.askpancho.desconexion.bloqueo" />
+
+        <service
+            android:name=".Watcher"
+            android:exported="true"
+            android:label="desconexión"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/watcher" />
+        </service>
+
+        <service
+            android:name=".Silence"
+            android:exported="true"
+            android:label="desconexión"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>
