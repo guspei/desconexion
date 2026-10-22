@@ -36,7 +36,7 @@ object Setup {
         Step(
             "watch", "accesibilidad",
             "Para saber qué app se abre y bloquearla si toca. No lee nada más y no tiene acceso a internet.",
-            "Entra en desconexión y actívala. Si sale bloqueado: información de la app → ⋮ → permitir ajustes restringidos, y vuelve a intentarlo.",
+            "Entra en apps descargadas → desconexión y actívala. Si sale bloqueado: información de la app → ⋮ → permitir ajustes restringidos, y vuelve a intentarlo.",
             false, Sys::watcherOn,
         ) { open(it, Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) },
         Step(
