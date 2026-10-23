@@ -8,7 +8,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -88,11 +87,13 @@ object Setup {
     fun pending(c: Context, all: Boolean = false) =
         steps.filter { !it.done(c) && (all || !(it.optional && Store.skipped(it.id))) }
 
-    /** After app info: what Android asks before it lets an app installed outside the store use accessibility. */
-    fun unblock(c: Context) =
-        listOf("⋮", said(c, "app_restricted_settings_lockscreen_title", R.string.watch_restricted), c.getString(R.string.watch_back))
+    /** After the app list: what Android asks before it lets an app installed outside the store use accessibility. */
+    fun unblock(c: Context) = listOf(
+        "desconexión", "⋮",
+        said(c, "app_restricted_settings_lockscreen_title", R.string.watch_restricted), c.getString(R.string.watch_back),
+    )
 
-    fun appInfoLabel(c: Context) = said(c, "application_info_label", R.string.watch_app_info)
+    fun allAppsLabel(c: Context) = said(c, "all_apps", R.string.watch_all_apps)
 
     /** A label exactly as the phone's Settings shows it, in its language; [fallback] if it has none. */
     @SuppressLint("DiscouragedApi")
@@ -104,8 +105,8 @@ object Setup {
         null
     } ?: c.getString(fallback)
 
-    fun appInfo(a: Activity) =
-        open(a, Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${a.packageName}")))
+    /** App info opened straight from an app hides ⋮ on some phones (OxygenOS); reached from the list it shows it. */
+    fun allApps(a: Activity) = open(a, Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS))
 
     private fun open(a: Activity, i: Intent) {
         Grants.give(Sys.settingsPackage(a), 5 * 60_000L)

@@ -67,8 +67,8 @@ class SetupActivity : Activity() {
         // Back without it on: likely Android's block on apps installed outside the store.
         if (step.id == "watch" && step.id in Setup.tried) {
             how.addView(label(getString(R.string.watch_stuck), 18f, GRAY).apply { setPadding(0, dp(28), 0, dp(4)) })
-            val info = button(Setup.appInfoLabel(this), 18f).apply { setOnClickListener { Setup.appInfo(this@SetupActivity) } }
-            taps(listOf(info) + Setup.unblock(this).map(::line))
+            val apps = button(Setup.allAppsLabel(this), 18f).apply { setOnClickListener { Setup.allApps(this@SetupActivity) } }
+            taps(listOf(apps) + Setup.unblock(this).map(::line))
         }
         skip.visibility = if (step.optional) View.VISIBLE else View.INVISIBLE
         skip.setOnClickListener { Store.skip(step.id); show() }

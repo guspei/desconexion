@@ -5,6 +5,9 @@
     <string name="setup_skip">ahora no</string>
     <string name="setup_switch">activa el interruptor</string>
 
+    <string name="home_off">bloqueo inactivo</string>
+    <string name="home_no_usage">sin datos de uso</string>
+
     <string name="home_title">inicio</string>
     <string name="home_why">Para que desconexión sea tu pantalla de inicio.</string>
     <string name="home_how">elige desconexión</string>
@@ -13,7 +16,7 @@
     <string name="watch_why">Solo ve qué app abres, para bloquearla si hace falta.</string>
     <string name="watch_downloaded">Aplicaciones descargadas</string>
     <string name="watch_stuck">¿no te deja?</string>
-    <string name="watch_app_info">Información de la aplicación</string>
+    <string name="watch_all_apps">Todas las aplicaciones</string>
     <string name="watch_restricted">Permitir ajustes restringidos</string>
     <string name="watch_back">vuelve aquí y actívala</string>
 

@@ -99,7 +99,7 @@ class HomeActivity : Activity() {
         val watching = Sys.watcherOn(this)
         val usage = Usage.granted(this)
         warn.visibility = if (watching && usage) View.GONE else View.VISIBLE
-        warn.text = if (!watching) "bloqueo inactivo" else "sin datos de uso"
+        warn.setText(if (!watching) R.string.home_off else R.string.home_no_usage)
         warn.setOnClickListener { SetupActivity.start(this) }
         if (!usage) {
             time.text = ""

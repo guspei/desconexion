@@ -6,6 +6,9 @@
     <string name="setup_skip">not now</string>
     <string name="setup_switch">turn on the switch</string>
 
+    <string name="home_off">blocking is off</string>
+    <string name="home_no_usage">no usage data</string>
+
     <string name="home_title">home</string>
     <string name="home_why">So desconexión becomes your home screen.</string>
     <string name="home_how">choose desconexión</string>
@@ -14,7 +17,7 @@
     <string name="watch_why">It only sees which app you open, so it can block it if needed.</string>
     <string name="watch_downloaded">Downloaded apps</string>
     <string name="watch_stuck">won’t turn on?</string>
-    <string name="watch_app_info">App info</string>
+    <string name="watch_all_apps">All apps</string>
     <string name="watch_restricted">Allow restricted settings</string>
     <string name="watch_back">come back and turn it on</string>
 
