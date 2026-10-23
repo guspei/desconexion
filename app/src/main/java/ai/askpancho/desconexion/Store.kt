@@ -76,7 +76,7 @@ object Store {
             off = off + pkg
         }
         save(list, off, if (rule == CHALLENGE) blocked + pkg else blocked - pkg)
-        sp.edit().apply { if (rule > 0) putInt("limit.$pkg", rule) else remove("limit.$pkg") }.apply()
+        setLimit(pkg, rule)
     }
 
     fun setOnHome(pkg: String, on: Boolean) {
@@ -100,6 +100,20 @@ object Store {
             sp.edit().putString("sites", v.joinToString("\n")).apply()
             siteList = v
         }
+
+    /** Daily minutes for an app or a site ("web:youtube.com"); 0 for none. */
+    fun setLimit(key: String, minutes: Int) =
+        sp.edit().apply { if (minutes > 0) putInt("limit.$key", minutes) else remove("limit.$key") }.apply()
+
+    /** Time spent today on a site with a daily limit, counted by the watcher. */
+    fun webUsed(key: String): Long {
+        val v = sp.getString("used.$key", null) ?: return 0
+        val (day, ms) = v.split(':')
+        return if (day.toLong() == Usage.today()) ms.toLong() else 0
+    }
+
+    fun addWebUse(key: String, ms: Long) =
+        sp.edit().putString("used.$key", "${Usage.today()}:${webUsed(key) + ms}").apply()
 
     /** Extra minutes granted today on top of the daily limit. */
     fun extension(pkg: String): Int {

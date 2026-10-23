@@ -29,6 +29,14 @@ class LogicTest {
     }
 
     @Test
+    fun siteLinesCarryOptionalDailyMinutes() {
+        assertEquals("youtube.com" to 10, Sites.parse("https://www.YouTube.com 10m"))
+        assertEquals("9gag.com" to 15, Sites.parse(" 9gag.com   15 min"))
+        assertEquals("tiktok.com" to 0, Sites.parse("tiktok.com"))
+        assertNull(Sites.parse("   "))
+    }
+
+    @Test
     fun subdomainsMatchButLookalikesDoNot() {
         val sites = listOf("youtube.com")
         assertEquals("youtube.com", Sites.match("m.youtube.com", sites))

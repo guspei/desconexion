@@ -123,9 +123,9 @@ class BlockActivity : Activity() {
         key = i.getStringExtra(KEY) ?: return finish()
         mode = i.getIntExtra(MODE, CHALLENGE)
         launch = i.getBooleanExtra(LAUNCH, false)
-        title.text = when (mode) {
-            WEB -> key.removePrefix("web:")
-            SETTINGS -> key
+        title.text = when {
+            key.startsWith("web:") -> key.removePrefix("web:")
+            mode == SETTINGS -> key
             else -> Apps.label(this, key) ?: key
         }
         if (mode == LIMIT) {
@@ -199,7 +199,7 @@ class BlockActivity : Activity() {
     private fun giveUp() {
         decided = true
         when {
-            mode == WEB -> Watcher.instance?.leaveSite()
+            key.startsWith("web:") -> Watcher.instance?.leaveSite()
             !launch -> startActivity(Intent(this, HomeActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }
         finish()
