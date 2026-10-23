@@ -6,6 +6,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Build
 import android.view.View
@@ -35,6 +36,17 @@ fun ripple() = RippleDrawable(ColorStateList.valueOf(0x22FFFFFF), null, ColorDra
 fun <V : View> V.tap(f: (V) -> Unit): V = apply {
     background = ripple()
     setOnClickListener { f(this) }
+}
+
+/** Text in a thin rounded frame, for what to tap next. */
+fun Context.button(s: String, sp: Float = 20f) = label(s, sp, WHITE).apply {
+    setPadding(dp(22), dp(10), dp(22), dp(10))
+    val r = dp(24).toFloat()
+    background = RippleDrawable(
+        ColorStateList.valueOf(0x22FFFFFF),
+        GradientDrawable().apply { cornerRadius = r; setStroke(dp(1), GRAY) },
+        GradientDrawable().apply { cornerRadius = r; setColor(Color.WHITE) },
+    )
 }
 
 fun Context.column() = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }

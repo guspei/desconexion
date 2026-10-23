@@ -4,12 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Space
 import android.widget.TextView
 
-/** One permission per screen: what it is for, where to tap, and a single button. */
+/** One permission per screen: what it is for, each tap in order, and a single button. */
 class SetupActivity : Activity() {
     companion object {
         private const val ALL = "all"
@@ -21,8 +22,7 @@ class SetupActivity : Activity() {
     private lateinit var count: TextView
     private lateinit var title: TextView
     private lateinit var why: TextView
-    private lateinit var how: TextView
-    private lateinit var info: TextView
+    private lateinit var how: LinearLayout
     private lateinit var skip: TextView
     private lateinit var go: TextView
 
@@ -31,15 +31,12 @@ class SetupActivity : Activity() {
         count = label("", 14f, GRAY)
         title = label("", 34f, WHITE)
         why = label("", 18f, GRAY).apply { setPadding(0, dp(14), 0, 0); setLineSpacing(0f, 1.2f) }
-        how = label("", 16f, WHITE).apply { setPadding(0, dp(28), 0, 0); setLineSpacing(0f, 1.2f) }
-        info = label("información de la app", 16f, GRAY).apply {
-            setPadding(0, dp(14), dp(14), dp(14))
-            setOnClickListener { Setup.appInfo(this@SetupActivity) }
-        }
-        skip = label("ahora no", 20f, GRAY).apply { setPadding(0, dp(14), dp(24), dp(14)) }
-        go = label("activar", 22f, WHITE).apply { setPadding(dp(24), dp(14), 0, dp(14)) }
+        how = column().apply { setPadding(0, dp(20), 0, 0) }
+        skip = label(getString(R.string.setup_skip), 20f, GRAY).apply { setPadding(0, dp(14), dp(24), dp(14)) }
+        go = button(getString(R.string.setup_go))
 
         val bottom = LinearLayout(this).apply {
+            gravity = Gravity.CENTER_VERTICAL
             addView(skip)
             addView(Space(context), LinearLayout.LayoutParams(0, 1, 1f))
             addView(go)
@@ -50,7 +47,6 @@ class SetupActivity : Activity() {
         col.addView(title)
         col.addView(why)
         col.addView(how)
-        col.addView(info)
         col.addView(Space(this), LinearLayout.LayoutParams(1, 0, 1f))
         col.addView(bottom, LinearLayout.LayoutParams(-1, -2))
         screen(col)
@@ -64,13 +60,31 @@ class SetupActivity : Activity() {
     private fun show() {
         val step = Setup.pending(this, intent.getBooleanExtra(ALL, false)).firstOrNull() ?: return finish()
         count.text = "${Setup.steps.indexOf(step) + 1}/${Setup.steps.size}"
-        title.text = step.title
-        why.text = step.why
-        how.text = step.how
-        info.visibility = if (step.id == "watch") View.VISIBLE else View.GONE
+        title.setText(step.title)
+        why.setText(step.why)
+        how.removeAllViews()
+        taps(step.how(this).map(::line))
+        // Back without it on: likely Android's block on apps installed outside the store.
+        if (step.id == "watch" && step.id in Setup.tried) {
+            how.addView(label(getString(R.string.watch_stuck), 18f, GRAY).apply { setPadding(0, dp(28), 0, dp(4)) })
+            val info = button(Setup.appInfoLabel(this), 18f).apply { setOnClickListener { Setup.appInfo(this@SetupActivity) } }
+            taps(listOf(info) + Setup.unblock(this).map(::line))
+        }
         skip.visibility = if (step.optional) View.VISIBLE else View.INVISIBLE
         skip.setOnClickListener { Store.skip(step.id); show() }
-        go.setOnClickListener { step.go(this) }
+        go.setOnClickListener { Setup.tried += step.id; step.go(this) }
+    }
+
+    private fun line(s: String) = label(s, 20f, WHITE)
+
+    /** Numbered when there is more than one, so it reads like the screens that follow. */
+    private fun taps(views: List<View>) = views.forEachIndexed { i, v ->
+        how.addView(LinearLayout(this).apply {
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, dp(8), 0, dp(8))
+            if (views.size > 1) addView(label("${i + 1}", 18f, GRAY), LinearLayout.LayoutParams(dp(32), -2))
+            addView(v)
+        })
     }
 
     @Deprecated("Deprecated in Java")

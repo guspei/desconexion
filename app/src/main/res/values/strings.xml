@@ -1,3 +1,30 @@
 <resources>
-    <string name="watcher">Bloquea apps y webs.</string>
+    <string name="watcher">Blocks apps and websites.</string>
+
+    <!-- Setup guide. Lines that name a Settings label use the phone's own wording when it has one. -->
+    <string name="setup_go">turn on</string>
+    <string name="setup_skip">not now</string>
+    <string name="setup_switch">turn on the switch</string>
+
+    <string name="home_title">home</string>
+    <string name="home_why">So desconexión becomes your home screen.</string>
+    <string name="home_how">choose desconexión</string>
+
+    <string name="watch_title">accessibility</string>
+    <string name="watch_why">It only sees which app you open, so it can block it if needed.</string>
+    <string name="watch_downloaded">Downloaded apps</string>
+    <string name="watch_stuck">won’t turn on?</string>
+    <string name="watch_app_info">App info</string>
+    <string name="watch_restricted">Allow restricted settings</string>
+    <string name="watch_back">come back and turn it on</string>
+
+    <string name="usage_title">usage</string>
+    <string name="usage_why">To count your screen time and apply daily limits.</string>
+
+    <string name="listen_title">notifications</string>
+    <string name="listen_why">To silence blocked and limited apps, and turn on Do Not Disturb when you lock the phone.</string>
+
+    <string name="post_title">alerts</string>
+    <string name="post_why">To see your checks without unlocking the phone.</string>
+    <string name="post_how">allow notifications</string>
 </resources>

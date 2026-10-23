@@ -1,0 +1,29 @@
+<resources>
+    <string name="watcher">Bloquea apps y webs.</string>
+
+    <string name="setup_go">activar</string>
+    <string name="setup_skip">ahora no</string>
+    <string name="setup_switch">activa el interruptor</string>
+
+    <string name="home_title">inicio</string>
+    <string name="home_why">Para que desconexión sea tu pantalla de inicio.</string>
+    <string name="home_how">elige desconexión</string>
+
+    <string name="watch_title">accesibilidad</string>
+    <string name="watch_why">Solo ve qué app abres, para bloquearla si hace falta.</string>
+    <string name="watch_downloaded">Aplicaciones descargadas</string>
+    <string name="watch_stuck">¿no te deja?</string>
+    <string name="watch_app_info">Información de la aplicación</string>
+    <string name="watch_restricted">Permitir ajustes restringidos</string>
+    <string name="watch_back">vuelve aquí y actívala</string>
+
+    <string name="usage_title">uso</string>
+    <string name="usage_why">Para contar tu tiempo de pantalla y aplicar los límites diarios.</string>
+
+    <string name="listen_title">notificaciones</string>
+    <string name="listen_why">Para silenciar las apps bloqueadas o con límite, y activar No molestar al bloquear el teléfono.</string>
+
+    <string name="post_title">avisos</string>
+    <string name="post_why">Para ver tus comprobaciones sin desbloquear el teléfono.</string>
+    <string name="post_how">permite las notificaciones</string>
+</resources>
