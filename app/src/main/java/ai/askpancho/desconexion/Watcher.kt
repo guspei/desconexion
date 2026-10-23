@@ -33,21 +33,19 @@ class Watcher : AccessibilityService() {
     private var lastBlock = ""
     private var quietUntil = 0L
 
-    /** A site with a daily limit in front, and since when (elapsed realtime). */
-    private var timed: String? = null
-    private var timedSince = 0L
+    /** Blocked site last seen in front, so its pass running out asks again with no page change. */
+    private var onSite: String? = null
 
     private val recheck = Runnable { evaluate() }
     private val urlCheck = Runnable { urlPending = false; checkUrl() }
-    // Not checkUrl: the address bar hides during a full screen video.
-    private val timeUp = Runnable { timed?.let { timeSite(it, Store.limit("web:$it")) } }
+    private val passUp = Runnable { armPass() }
 
     private val screen = object : BroadcastReceiver() {
         override fun onReceive(c: Context, i: Intent) {
             when (i.action) {
                 Intent.ACTION_SCREEN_OFF -> {
                     h.removeCallbacks(recheck)
-                    endSite()
+                    h.removeCallbacks(passUp)
                     Silence.quiet(true)
                 }
                 Intent.ACTION_SCREEN_ON -> if (Checks.pending()) Checks.refresh(c)
@@ -97,7 +95,8 @@ class Watcher : AccessibilityService() {
         if (Store.quietOurs && !keyguard.isKeyguardLocked) Silence.quiet(false)
         if (pkg != fg) {
             lastBlock = ""
-            endSite()
+            onSite = null
+            h.removeCallbacks(passUp)
         }
         fg = pkg
         setBrowsing(pkg in Sites.BROWSERS && Store.sites.isNotEmpty())
@@ -134,7 +133,10 @@ class Watcher : AccessibilityService() {
             if (left <= 0) return block(pkg, BlockActivity.CHALLENGE)
             h.postDelayed(recheck, left + 500)
         }
-        if (browsing) checkUrlSoon()
+        if (browsing) {
+            armPass()
+            checkUrlSoon()
+        }
     }
 
     private fun block(key: String, mode: Int) {
@@ -167,39 +169,16 @@ class Watcher : AccessibilityService() {
         val bar = root.findAccessibilityNodeInfosByViewId(id).firstOrNull() ?: return
         if (bar.isFocused) return
         val host = Sites.host(bar.text?.toString() ?: return) ?: return
-        val site = Sites.match(host, Store.sites) ?: return endSite()
-        val key = "web:$site"
-        val limit = Store.limit(key)
-        if (limit > 0) return timeSite(site, limit)
-        endSite()
-        if (Grants.left(key) > 0) return
-        block(key, BlockActivity.WEB)
+        onSite = Sites.match(host, Store.sites)
+        armPass()
     }
 
-    /** Free up to its daily minutes, like an app with a limit; one timer for when they run out. */
-    private fun timeSite(site: String, limit: Int) {
-        if (timed != site) {
-            endSite()
-            timed = site
-            timedSince = SystemClock.elapsedRealtime()
-        }
-        val key = "web:$site"
-        val left = (limit + Store.extension(key)) * 60_000L - Store.webUsed(key) -
-            (SystemClock.elapsedRealtime() - timedSince)
-        h.removeCallbacks(timeUp)
-        if (left > 0) {
-            h.postDelayed(timeUp, left + 1000)
-            return
-        }
-        endSite()
-        block(key, BlockActivity.LIMIT)
-    }
-
-    private fun endSite() {
-        val site = timed ?: return
-        timed = null
-        h.removeCallbacks(timeUp)
-        Store.addWebUse("web:$site", SystemClock.elapsedRealtime() - timedSince)
+    /** One timer for the pass on the site in front; the address bar hides during a full screen video. */
+    private fun armPass() {
+        h.removeCallbacks(passUp)
+        val site = onSite ?: return
+        val left = Grants.left("web:$site")
+        if (left > 0) h.postDelayed(passUp, left + 500) else block("web:$site", BlockActivity.WEB)
     }
 
     /** After a solved challenge: re-arm the timers for the app now in front. */

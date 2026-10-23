@@ -28,13 +28,6 @@ object Sites {
     /** A line typed by the user, reduced to a bare domain. */
     fun normalize(line: String) = host(line)?.takeIf { '.' in it }
 
-    /** A line of the list: a domain and its daily minutes, 0 if it has none ("youtube.com 10m"). */
-    fun parse(line: String): Pair<String, Int>? {
-        val parts = line.trim().split(Regex("\\s+"), limit = 2)
-        val site = normalize(parts[0]) ?: return null
-        return site to (parts.getOrNull(1)?.takeWhile(Char::isDigit)?.toIntOrNull() ?: 0)
-    }
-
     fun match(host: String, sites: List<String>) =
         sites.firstOrNull { host == it || host.endsWith(".$it") }
 }

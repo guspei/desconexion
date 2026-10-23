@@ -32,10 +32,10 @@ class ListActivity : Activity() {
             setTextColor(WHITE)
             setHintTextColor(DIM)
             if (what == SITES) {
-                hint = "youtube.com\ninstagram.com 10m"
+                hint = "youtube.com\ninstagram.com"
                 inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or
                     InputType.TYPE_TEXT_VARIATION_URI or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-                setText(Store.sites.joinToString("\n") { s -> Store.limit("web:$s").let { if (it > 0) "$s ${it}m" else s } })
+                setText(Store.sites.joinToString("\n"))
             } else {
                 hint = "puerta\ngas"
                 inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
@@ -50,11 +50,8 @@ class ListActivity : Activity() {
     override fun onPause() {
         super.onPause()
         val lines = edit.text.lines()
-        if (what == SITES) {
-            val parsed = lines.mapNotNull(Sites::parse).distinctBy { it.first }
-            Store.sites = parsed.map { it.first }
-            for ((site, min) in parsed) Store.setLimit("web:$site", min)
-        } else {
+        if (what == SITES) Store.sites = lines.mapNotNull(Sites::normalize).distinct()
+        else {
             Store.checks = lines.map { it.trim().lowercase() }.filter { it.isNotEmpty() }.distinct()
             Checks.refresh(this)
         }
